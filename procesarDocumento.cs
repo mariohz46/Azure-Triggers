@@ -20,7 +20,7 @@ public class procesarDocumento
     {
         _logger.LogInformation($"Mensaje recibido (intento #{message.DequeueCount}): {message.MessageText}");
 
-        DocumentoMensaje? documento; //investigar
+        DocumentoMensaje? documento; //variable del tipo DocumentoMensaje. No es una instancia.
         try
         {
             documento = JsonSerializer.Deserialize<DocumentoMensaje>(message.MessageText);

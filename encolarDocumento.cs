@@ -28,17 +28,17 @@ public class EncolarDocumento
     public async Task<IActionResult> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post",Route ="encolar")] HttpRequest req)
     {
-        var documento = await req.ReadFromJsonAsync<DocumentoMensaje>();
+        var documento = await req.ReadFromJsonAsync<DocumentoMensaje>();//proceso de deserializacion
         if(documento is null || string.IsNullOrWhiteSpace(documento.nombre))
         {
             return new BadRequestObjectResult("El campo nombre es obligatorio");
         }
         //Lo que esta dentro de esta seccion de comentario. Si lo utilizare en el proceso de la API real
-        var queueClient = new QueueClient(connectionString,nombreCola);
-        await queueClient.CreateIfNotExistsAsync();
+        var queueClient = new QueueClient(connectionString,nombreCola); //intermediario entre c# y Azure Storage
+        await queueClient.CreateIfNotExistsAsync();//crea la cola en caso no exista
         
-        string mensajeJSON = JsonSerializer.Serialize(documento);
-        await queueClient.SendMessageAsync(mensajeJSON);
+        string mensajeJSON = JsonSerializer.Serialize(documento);//Serializo el objeto c#
+        await queueClient.SendMessageAsync(mensajeJSON);//lo envio a la cola
         //Aqui finaliza la seccion 
         _logger.LogInformation($"Mensaje encolado :{mensajeJSON}");
 
